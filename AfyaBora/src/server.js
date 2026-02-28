@@ -14,10 +14,18 @@ app.post('/ai',async (req, res) => {
         return res.status(400).json({ success: false, error: "Prompt is required" });
     }
     const rawData = await diagnosis(prompt)
-    const data = JSON.parse(rawData)
-    res.json({ success: true, data }); 
+  let parsedData;
 
-    res.send("the data isn", data)
+    try {
+      parsedData = JSON.parse(rawData);
+    } catch (parseError) {
+      parsedData = rawData;
+    }
+
+    return res.json({
+      success: true,
+      data: parsedData
+    });
 } catch (error){
     console.error(error);
     if (!res.headersSent) {
